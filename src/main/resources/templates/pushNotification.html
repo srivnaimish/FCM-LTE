@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Push Notification</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/momentjs/2.14.1/moment.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.37/js/bootstrap-datetimepicker.min.js"></script>
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.37/css/bootstrap-datetimepicker.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+    <script>
+        $(function () {
+            $('#datetimepicker1').datetimepicker();
+        });
+
+    </script>
+    <style>
+
+    </style>
+</head>
+<body>
+<form action="#" th:action="@{/push}" th:object="${push}" method="post">
+    <div class="container col-md-6">
+        <div class="panel panel-primary">
+            <div class="panel-heading"><h1>Schedule a Notification</h1></div>
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label class="control-label">Select App :</label>
+                            <select th:field="*{appName}" class="form-control">
+                                <option th:each="i : ${appNames}" th:value="${i}" th:text="${i}" required>
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label class="control-label">Select Notification Type :</label>
+                            <select th:field="*{type}" class="form-control">
+                                <option th:each="i : ${notificationTypes}" th:value="${i}" th:text="${i}" required>
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label class="control-label">Notification Title :</label>
+                            <input type="text" class="form-control" th:field="*{title}" required>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label class="control-label">Notification Body :</label>
+                            <input type="text" class="form-control" th:field="*{body}" required>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label class="control-label">Url (App package name in case of app open):</label>
+                            <input type="text" class="form-control" th:field="*{url}" required>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <input type="submit" class="form-control btn btn-primary" value="Push Now">
+                        </div>
+                    </div>
+                </div>
+                <br>
+                <div class="row">
+                    <div class="col-md-12">
+                            <h4 class="text-center"> OR </h4>
+                    </div>
+                </div>
+                <br>
+                <div class="row">
+                    <div class='col-md-12'>
+                        <div class="form-group">
+                            <label class="control-label">Schedule Time </label>
+                            <div class='input-group date' id='datetimepicker1'>
+                                <input type='text' class="form-control" th:field="*{time}"/>
+                                <span class="input-group-addon">
+                     <span class="glyphicon glyphicon-calendar"></span>
+                     </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <input type="submit" class="form-control btn btn-primary" value="Push Later">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</form>
+</body>
+</html>
