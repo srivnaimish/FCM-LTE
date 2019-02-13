@@ -28,8 +28,8 @@ public class EventCreator {
 
         @Scheduled(cron = "0 0/30 * * * *")
         public void create() {
-                long minTime = Utils.currentTimeMillis() - 900000;
-                long maxTime = Utils.currentTimeMillis() + 900000;
+                long minTime = System.currentTimeMillis() - 900000;
+                long maxTime = System.currentTimeMillis() + 900000;
 
                 List<PushNotification> pushNotifications = pushNotificationRepository.getHourlyNotification(minTime, maxTime);
                 if (pushNotifications == null || pushNotifications.size() == 0) {

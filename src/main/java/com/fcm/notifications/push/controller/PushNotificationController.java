@@ -79,7 +79,7 @@ public class PushNotificationController {
 
                 }
 
-                long timeInMillis = calendar.getTimeInMillis() + 19800000;
+                long timeInMillis = calendar.getTimeInMillis() - 19800000;
 
                 PushNotification pushNotification = new PushNotification(appId, type, timeInMillis, push.getTitle(), push.getBody(), push.getUrl());
                 pushNotificationRepository.save(pushNotification);
