@@ -12,4 +12,8 @@ public class Utils {
         public static <S, T extends Iterable<S>> boolean isEmpty(T argument) {
                 return (argument == null) || !argument.iterator().hasNext();
         }
+
+        public static long currentTimeMillis() {
+                return System.currentTimeMillis() + 19800000;
+        }
 }

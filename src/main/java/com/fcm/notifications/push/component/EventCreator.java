@@ -3,6 +3,7 @@ package com.fcm.notifications.push.component;
 import com.fcm.notifications.push.model.PushNotification;
 import com.fcm.notifications.push.repository.PushNotificationRepository;
 import com.fcm.notifications.push.service.FcmService;
+import com.fcm.notifications.push.utils.Utils;
 import org.json.JSONException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,8 +28,8 @@ public class EventCreator {
 
         @Scheduled(cron = "0 0/30 * * * *")
         public void create() {
-                long minTime = System.currentTimeMillis() - 900000;
-                long maxTime = System.currentTimeMillis() + 900000;
+                long minTime = Utils.currentTimeMillis() - 900000;
+                long maxTime = Utils.currentTimeMillis() + 900000;
 
                 List<PushNotification> pushNotifications = pushNotificationRepository.getHourlyNotification(minTime, maxTime);
                 if (pushNotifications == null || pushNotifications.size() == 0) {
