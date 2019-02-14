@@ -29,59 +29,76 @@ import java.util.Date;
 public class PushNotificationController {
 
 
-        @Autowired
-        PushNotificationRepository pushNotificationRepository;
+    @Autowired
+    PushNotificationRepository pushNotificationRepository;
 
-        @Autowired
-        private FcmService fcmService;
+    @Autowired
+    private FcmService fcmService;
 
-        @GetMapping("/push")
-        public String pushForm(Model model) {
-                model.addAttribute("appNames", App.getAppNames());
-                model.addAttribute("notificationTypes", NotificationType.getList());
-                model.addAttribute("push", new Push());
-                return "pushNotification";
+    @GetMapping("/push")
+    public String pushForm(Model model) {
+        model.addAttribute("appNames", App.getAppNames());
+        model.addAttribute("notificationTypes", NotificationType.getList());
+        model.addAttribute("push", new Push());
+        return "pushNotification";
+    }
+
+    @PostMapping("/push")
+    public String pushSubmit(@ModelAttribute Push push, RedirectAttributes redirectAttributes) {
+
+        redirectAttributes.addFlashAttribute("message", "Failed");
+        redirectAttributes.addFlashAttribute("alertClass", "alert-danger");
+
+        if (Utils.isEmpty(push.getTime())) {
+            if (pushNow(push)) {
+                redirectAttributes.addFlashAttribute("message", "Sent Successfully");
+                redirectAttributes.addFlashAttribute("alertClass", "alert-success");
+            }
+            return "redirect:/push";
         }
 
-        @PostMapping("/push")
-        public String pushSubmit(@ModelAttribute Push push, RedirectAttributes redirectAttributes) {
-                if (Utils.isEmpty(push.getTime())) {
-                        pushNow(push);
-                        return "redirect:/push";
-                }
+        if (pushLater(push)) {
+            redirectAttributes.addFlashAttribute("message", "Scheduled Successfully");
+            redirectAttributes.addFlashAttribute("alertClass", "alert-success");
+        }
+        return "redirect:/push";
+    }
 
-                pushLater(push);
-                return "redirect:/push";
+    private boolean pushNow(Push push) {
+        int appId = App.getAppIdByName(push.getAppName());
+        String type = NotificationType.getKeyByTitle(push.getType());
+        PushNotification pushNotification = new PushNotification(appId, type, 0, push.getTitle(), push.getBody(), push.getUrl());
+        try {
+            fcmService.send(pushNotification);
+            pushNotification.setScheduleTime(-1);
+            pushNotificationRepository.save(pushNotification);
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return false;
         }
 
-        private void pushNow(Push push) {
-                int appId = App.getAppIdByName(push.getAppName());
-                String type = NotificationType.getKeyByTitle(push.getType());
-                PushNotification pushNotification = new PushNotification(appId, type,0, push.getTitle(), push.getBody(), push.getUrl());
-            try {
-                        fcmService.send(pushNotification);
-                } catch (JSONException e) {
-                        e.printStackTrace();
-                }
+        return true;
+    }
+
+    private boolean pushLater(Push push) {
+        int appId = App.getAppIdByName(push.getAppName());
+        String type = NotificationType.getKeyByTitle(push.getType());
+
+        Calendar calendar = Calendar.getInstance();
+
+        try {
+            SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy hh:mm aa");
+            Date date = dateFormat.parse(push.getTime());
+            calendar.setTime(date);
+        } catch (Exception ignored) {
+            return false;
         }
 
-        private void pushLater(Push push) {
-                int appId = App.getAppIdByName(push.getAppName());
-                String type = NotificationType.getKeyByTitle(push.getType());
+        long timeInMillis = calendar.getTimeInMillis() - 19800000;
 
-                Calendar calendar = Calendar.getInstance();
+        PushNotification pushNotification = new PushNotification(appId, type, timeInMillis, push.getTitle(), push.getBody(), push.getUrl());
+        pushNotificationRepository.save(pushNotification);
 
-                try {
-                        SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy hh:mm aa");
-                        Date date = dateFormat.parse(push.getTime());
-                        calendar.setTime(date);
-                } catch (Exception ignored) {
-
-                }
-
-                long timeInMillis = calendar.getTimeInMillis() - 19800000;
-
-                PushNotification pushNotification = new PushNotification(appId, type, timeInMillis, push.getTitle(), push.getBody(), push.getUrl());
-                pushNotificationRepository.save(pushNotification);
-        }
+        return true;
+    }
 }

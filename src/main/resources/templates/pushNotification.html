@@ -72,20 +72,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="form-group">
-                            <input type="submit" class="form-control btn btn-primary" value="Push Now">
-                        </div>
-                    </div>
-                </div>
-                <br>
-                <div class="row">
-                    <div class="col-md-12">
-                            <h4 class="text-center"> OR </h4>
-                    </div>
-                </div>
-                <br>
+
                 <div class="row">
                     <div class='col-md-12'>
                         <div class="form-group">
@@ -106,10 +93,25 @@
                         </div>
                     </div>
                 </div>
+                <br>
+                <div class="row">
+                    <div class="col-md-12">
+                            <h4 class="text-center"> OR </h4>
+                    </div>
+                </div>
+                <br>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <input type="submit" class="form-control btn btn-primary" value="Push Now">
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </div>
     </div>
-
+    <div th:if="${message}" th:text="${message}" th:class="${'alert ' + alertClass}"></div>
 </form>
 </body>
 </html>

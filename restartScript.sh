@@ -7,3 +7,4 @@ ln -s "/home/ubuntu/pushJar/$filename" /home/ubuntu/pushJar/push-0.0.1-SNAPSHOT.
 kill -9 $(lsof -t -i:8080)
 cd "/home/ubuntu/pushJar/"
 nohup java -jar /home/ubuntu/pushJar/push-0.0.1-SNAPSHOT.jar > pushnohuplog.out &
+tail -f /home/ubuntu/pushJar/pushnohuplog.out

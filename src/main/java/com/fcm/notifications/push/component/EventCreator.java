@@ -37,13 +37,15 @@ public class EventCreator {
                 }
 
                 for (PushNotification p : pushNotifications) {
+                        if (p.getScheduleTime() == -1) return;
                         try {
                                 fcmService.send(p);
+                                p.setScheduleTime(-1);
+                                pushNotificationRepository.save(p);
                         } catch (JSONException e) {
                                 e.printStackTrace();
                                 return;
                         }
-                        pushNotificationRepository.delete(p);
                 }
         }
 }
